@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 18 17:55:51 2021
-
-@author: ANUSHKA
-"""
 #Importing the libraries
 import datetime
 import hashlib
@@ -27,5 +21,37 @@ class Blockchain:
     def get_previous_block(self):
         prev_block=self.chain[-1]
         return prev_block
+    
+    def proof_of_work(self, previous_proof):
+        new_proof=1
+        check_proof=False
+        while check_proof is False:
+            hash_operation=hashlib.sha256(str(new_proof**2-previous_proof**2).encode()).hexdigest()
+            if hash_operation[:4]=='0000':
+                check_proof=True
+            else:
+                new_proof+=1
+        return new_proof
+    
+    def hash(self, block):
+        encoded_block=json.dumps(block, sort_keys=True).encode()
+        return hashlib.sha256(encoded_block).hexdigest()
+            
+    def is_chain_valid(self, chain):
+        previous_block=chain[0]
+        block_index=1
+        while block_index<len(chain):
+            block=chain[block_index]
+            if block['previous_hash']!=self.hash(previous_block):
+                return False
+            previous_proof=previous_block['proof']
+            proof=block['proof']
+            hash_operation=hashlib.sha256(str(proof**2-previous_proof**2).encode()).hexdigest()
+            if hash_operation[:4]!='0000':
+                return False
+            previous_block=block
+            block_index+=1
+        return True
+    
     
 #Mining our Blockchain
