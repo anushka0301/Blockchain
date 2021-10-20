@@ -53,7 +53,6 @@ class Blockchain:
             block_index+=1
         return True
     
-    
 #Mining our Blockchain
 #Creating a Web application
 app=Flask(__name__)
@@ -75,3 +74,23 @@ def mine_block():
               'proof':block['proof'],
               'previous_hash':block['previous_hash']}
     return jsonify(response), 200
+
+#Getting the full Blockchain
+@app.route('/get_chain', methods=['GET'])
+def get_chain():
+    response={'chain':blockchain.chain,
+              'length':len(blockchain.chain)}
+    return jsonify(response), 200
+
+
+
+
+
+
+
+
+
+
+
+
+
